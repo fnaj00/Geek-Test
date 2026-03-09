@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "books")
 public class Book {
     @Id
-    private Long isbn;
+    private String isbn;
 
     @Column(nullable = false)
     private String bookTitle;
@@ -14,25 +14,29 @@ public class Book {
     private String author;
     private String genre;
 
+
+    private String publisher;
+
     private Double price;
     private Double rating;
     private Integer copiesSold;
 
     public Book() {}
 
-    public Book(Long isbn, String bookTitle, String author, String genre,
-                Double price, Double rating, Integer copiesSold) {
+    public Book(String isbn, String bookTitle, String author, String genre,
+                String publisher, Double price, Double rating, Integer copiesSold) {
         this.isbn = isbn;
         this.bookTitle = bookTitle;
         this.author = author;
         this.genre = genre;
+        this.publisher = publisher;
         this.price = price;
         this.rating = rating;
         this.copiesSold = copiesSold;
     }
 
-    public Long getIsbn() { return isbn; }
-    public void setIsbn(Long isbn) { this.isbn = isbn; }
+    public String getIsbn() { return isbn; }
+    public void setIsbn(String isbn) { this.isbn = isbn; }
 
     public String getBookTitle() { return bookTitle; }
     public void setBookTitle(String bookTitle) { this.bookTitle = bookTitle; }
@@ -42,6 +46,9 @@ public class Book {
 
     public String getGenre() { return genre; }
     public void setGenre(String genre) { this.genre = genre; }
+
+    public String getPublisher() { return publisher; }
+    public void setPublisher(String publisher) { this.publisher = publisher; }
 
     public Double getPrice() { return price; }
     public void setPrice(Double price) { this.price = price; }
