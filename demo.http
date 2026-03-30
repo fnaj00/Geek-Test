@@ -1,0 +1,102 @@
+### Create User
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "username": "jjose285",
+  "password": "Str0ngPass!",
+  "name": "Johnkerby Joseph",
+  "email": "john@example.com",
+  "homeAddress": "Miami, FL"
+}
+
+###
+
+### Get User
+GET http://localhost:8080/users/jjose285
+
+###
+
+### Duplicate User (should fail)
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "username": "jjose285",
+  "password": "AnotherPass!"
+}
+
+###
+
+### Get Non-Existing User (should 404)
+GET http://localhost:8080/users/unknown
+
+
+### Update User - Sprint 3
+PUT http://localhost:8080/users/jjose285
+Content-Type: application/json
+
+{
+  "name": "John Joseph",
+  "homeAddress": "North Miami, FL",
+  "password": "NewStrongPass123"
+}
+
+###
+
+### Get Updated User
+GET http://localhost:8080/users/jjose285
+
+###
+
+### Try Updating Email - should fail
+PUT http://localhost:8080/users/jjose285
+Content-Type: application/json
+
+{
+  "email": "newemail@example.com"
+}
+
+###
+
+### Update Missing User - should 404
+PUT http://localhost:8080/users/unknownuser
+Content-Type: application/json
+
+{
+  "name": "Nobody"
+}
+
+### Add Credit Card - Sprint 4
+POST http://localhost:8080/users/jjose285/credit-cards
+Content-Type: application/json
+
+{
+  "cardNumber": "4111111111111111",
+  "expirationDate": "12/28",
+  "cardHolderName": "Johnkerby Joseph"
+}
+
+###
+
+### Add Credit Card to Missing User - should 404
+POST http://localhost:8080/users/unknownuser/credit-cards
+Content-Type: application/json
+
+{
+  "cardNumber": "4111111111111111",
+  "expirationDate": "12/28",
+  "cardHolderName": "Nobody"
+}
+
+###
+
+### Add Credit Card with Missing Fields - should 400
+POST http://localhost:8080/users/jjose285/credit-cards
+Content-Type: application/json
+
+{
+  "cardNumber": "",
+  "expirationDate": "",
+  "cardHolderName": ""
+}
