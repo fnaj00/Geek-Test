@@ -1,70 +1,43 @@
 package com.geektext.bookbrowsingsorting.controller;
 
 import com.geektext.bookbrowsingsorting.model.Book;
-import com.geektext.bookbrowsingsorting.repository.BookRepository;
+import com.geektext.bookbrowsingsorting.service.BookService;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Sort;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
 
-    private final BookRepository repo;
+    private final BookService bookService;
 
-    public BookController(BookRepository repo) {
-        this.repo = repo;
+    public BookController(BookService bookService) {
+        this.bookService = bookService;
     }
 
-    // GET http://localhost:8080/api/books/genre?Genre=Fantasy
-    @GetMapping("/genre")
-    public List<Book> getBooksByGenre(@RequestParam(name = "Genre") String genre) {
-        return repo.findByGenreIgnoreCase(genre);
+    @GetMapping("/genre/{genre}")
+    public List<Book> getBooksByGenre(@PathVariable String genre) {
+        return bookService.getBooksByGenre(genre);
     }
 
-    // GET http://localhost:8080/api/books?sort=price
-    @GetMapping
-    public List<Book> getBooksSorted(
-            @RequestParam String sort,
-            @RequestParam(defaultValue = "asc") String direction
-    ) {
-        Sort.Direction dir = direction.equalsIgnoreCase("desc")
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
-
-        return repo.findAll(Sort.by(dir, sort));
-    }
-
-    // GET http://localhost:8080/api/books/top-sellers
     @GetMapping("/top-sellers")
     public List<Book> getTopSellers() {
-        return repo.findTop10ByOrderByCopiesSoldDesc();
+        return bookService.getTopSellers();
     }
 
-    // GET http://localhost:8080/api/books/rating?Rating=4.5
-    @GetMapping("/rating")
-    public List<Book> getBooksByRating(@RequestParam(name = "Rating") Double rating) {
-        return repo.findByRatingGreaterThanEqual(rating);
+    @GetMapping("/rating/{rating}")
+    public List<Book> getBooksByRating(@PathVariable BigDecimal rating) {
+        return bookService.getBooksByRating(rating);
     }
 
-    // PATCH http://localhost:8080/api/books/discount?publisher=Penguin&discountPercent=10
     @PatchMapping("/discount")
-    public List<Book> discountBooksByPublisher(
+    public String applyDiscount(
             @RequestParam String publisher,
-            @RequestParam Double discountPercent
-    ) {
+            @RequestParam double discountPercent) {
 
-        List<Book> books = repo.findByPublisherIgnoreCase(publisher);
-
-        for (Book book : books) {
-
-            double discountAmount = book.getPrice() * (discountPercent / 100);
-            book.setPrice(book.getPrice() - discountAmount);
-
-            repo.save(book);
-        }
-
-        return books;
+        bookService.applyDiscount(publisher, discountPercent);
+        return "Discount applied successfully to books from publisher: " + publisher;
     }
 }
